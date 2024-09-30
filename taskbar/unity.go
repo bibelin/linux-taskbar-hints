@@ -59,7 +59,7 @@ func libUnityInit(desktopName string) (*libUnityEntry, error) {
 	return &entry, nil
 }
 
-func (entry *libUnityEntry) update(progress float64, pulse bool, count uint64) error {
+func (entry *libUnityEntry) update(progress float64, pulse bool, count uint) error {
 	var progressVisible bool
 	var countVisible bool
 

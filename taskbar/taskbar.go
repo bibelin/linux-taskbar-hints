@@ -33,7 +33,7 @@ type Taskbar struct {
 	xid        int32          // xorg window ID
 	progress   int            // progress value (0-100)
 	pulse      bool           // whether taskbar pulse is enabled
-	count      uint64         // counter value (only supported by libunity API)
+	count      uint           // counter value (only supported by libunity API)
 }
 
 // Creates [Taskbar] item, returns pointer to it and any error if happened.
@@ -73,7 +73,10 @@ func Init(desktopName string, xid int32) (*Taskbar, error) {
 	}
 
 	if backend == unityBackend {
-		entry, _ := libUnityInit(desktopName)
+		entry, err := libUnityInit(desktopName)
+		if err != nil {
+			return nil, err
+		}
 		t = Taskbar{session, backend, entry, xid, 0, false, 0}
 	} else {
 		t = Taskbar{session, backend, nil, xid, 0, false, 0}
@@ -87,9 +90,9 @@ func (t *Taskbar) Progress() int {
 }
 
 // Set progress value (0-100)
-func (t *Taskbar) SetProgress(p int) {
+func (t *Taskbar) SetProgress(p int) error {
 	t.progress = p
-	t.update()
+	return t.update()
 }
 
 // Get current pulse value
@@ -99,20 +102,20 @@ func (t *Taskbar) Pulse() bool {
 
 // Enable or disable pulse. This mode "highlights" the item in taskbar, dragging
 // user attention. If pulse is enabled, progress is not shown.
-func (t *Taskbar) SetPulse(p bool) {
+func (t *Taskbar) SetPulse(p bool) error {
 	t.pulse = p
-	t.update()
+	return t.update()
 }
 
 // Get current counter value
-func (t *Taskbar) Count() uint64 {
+func (t *Taskbar) Count() uint {
 	return t.count
 }
 
 // Set counter value (only supported by libunity Launcher API)
-func (t *Taskbar) SetCount(c uint64) {
+func (t *Taskbar) SetCount(c uint) error {
 	t.count = c
-	t.update()
+	return t.update()
 }
 
 func (t *Taskbar) update() error {
