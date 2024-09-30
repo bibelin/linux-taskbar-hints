@@ -1,10 +1,4 @@
 // Package to set window hints like progress in taskbar on Linux.
-// It uses libunity Launcher API (https://wiki.ubuntu.com/Unity/LauncherAPI)
-// by default, which is supported in KDE and GNOME with extensions like
-// Dash-to-Dock. On Cinnamon it uses Xorg hints, the same that are used in
-// libxapp (https://github.com/linuxmint/xapp).
-// Neither libunity nor libxapp don't need to be installed for this package to
-// work, direct Dbus calls and Xorg hints are used instead.
 package taskbar
 
 import (
@@ -56,7 +50,11 @@ func Connect(desktopName string, xid int32) (*Taskbar, error) {
 	}
 
 	// Set backend
-	if session == waylandSession {
+	if os.Getenv("GO_TASKBAR_BACKEND") == "libunity" {
+		backend = unityBackend
+	} else if os.Getenv("GO_TASKBAR_BACKEND") == "xapp" {
+		backend = xappBackend
+	} else if session == waylandSession {
 		backend = unityBackend
 	} else if os.Getenv("XDG_CURRENT_DESKTOP") == "Cinnamon" {
 		backend = xappBackend
