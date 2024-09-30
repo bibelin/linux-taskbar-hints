@@ -2,7 +2,7 @@
 // It uses libunity Launcher API (https://wiki.ubuntu.com/Unity/LauncherAPI)
 // by default, which is supported in KDE and GNOME with extensions like
 // Dash-to-Dock. On Cinnamon it uses Xorg hints, the same that are used in
-// libxapp (https://projects.linuxmint.com/xapp/reference/).
+// libxapp (https://github.com/linuxmint/xapp).
 // Neither libunity nor libxapp don't need to be installed for this package to
 // work, direct Dbus calls and Xorg hints are used instead.
 package taskbar
@@ -33,7 +33,7 @@ type Taskbar struct {
 	xid        int32          // xorg window ID
 	progress   int            // progress value (0-100)
 	pulse      bool           // whether taskbar pulse is enabled
-	count      uint           // counter value (only supported by libunity API)
+	count      int            // counter value (only supported by libunity API)
 }
 
 // Creates [Taskbar] item, returns pointer to it and any error if happened.
@@ -108,12 +108,13 @@ func (t *Taskbar) SetPulse(p bool) error {
 }
 
 // Get current counter value
-func (t *Taskbar) Count() uint {
+func (t *Taskbar) Count() int {
 	return t.count
 }
 
-// Set counter value (only supported by libunity Launcher API)
-func (t *Taskbar) SetCount(c uint) error {
+// Set counter value (may not work depending on user's desktop environment even
+// if other features work)
+func (t *Taskbar) SetCount(c int) error {
 	t.count = c
 	return t.update()
 }
@@ -123,6 +124,6 @@ func (t *Taskbar) update() error {
 		// TODO: Xapp implementation
 		return nil
 	} else {
-		return t.unityEntry.update(float64(t.progress)/100.0, t.pulse, t.count)
+		return t.unityEntry.update(float64(t.progress)/100.0, t.pulse, int64(t.count))
 	}
 }
