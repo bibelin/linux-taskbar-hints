@@ -10,8 +10,10 @@ import (
 	"github.com/godbus/dbus/v5/introspect"
 )
 
+// Dbus interface name
 const dbusInterface = "com.canonical.Unity.LauncherEntry"
 
+// Dbus introspection scheme
 const introspection = `
 <node>
 	<interface name="` + dbusInterface + `">
@@ -35,7 +37,7 @@ type libUnityEntry struct {
 	countVisible    bool
 }
 
-func libUnityInit(desktopName string) (*libUnityEntry, error) {
+func libUnityConnect(desktopName string) (*libUnityEntry, error) {
 	var hash uint64
 
 	conn, err := dbus.ConnectSessionBus()
@@ -64,6 +66,23 @@ func libUnityInit(desktopName string) (*libUnityEntry, error) {
 	return &entry, nil
 }
 
+func libUnityDisconnect(entry *libUnityEntry) []error {
+	var results []error
+
+	if entry == nil {
+		return nil
+	}
+
+	if err := entry.update(0, false, 0); err != nil {
+		results = append(results, err)
+	}
+	if err := entry.connection.Close(); err != nil {
+		results = append(results, err)
+	}
+	return results
+}
+
+// com.canonical.Unity.LauncherEntry.Query Dbus method
 func (entry *libUnityEntry) Query() (map[string]interface{}, *dbus.Error) {
 	data := map[string]interface{}{
 		"progress":         entry.progress,
@@ -114,6 +133,7 @@ func (entry *libUnityEntry) update(progress float64, pulse bool, count int64) er
 		"count":            count,
 		"countVisible":     countVisible,
 	}
+	// Emit com.canonical.Unity.LauncherEntry.Update signal
 	if err := entry.connection.Emit(
 		entry.objectPath,
 		dbusInterface+".Update",

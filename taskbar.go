@@ -36,11 +36,11 @@ type Taskbar struct {
 	count      int            // counter value (only supported by libunity API)
 }
 
-// Creates [Taskbar] item, returns pointer to it and any error if happened.
+// Creates [Taskbar] item.
 // `desktopName` is a name of desktop file to be worked with using libunity
 // Launcher API (".desktop" suffix can be omitted). `xid` is an xorg window ID
 // used in case if taskbar item is modified using xapp window hints.
-func Init(desktopName string, xid int32) (*Taskbar, error) {
+func Connect(desktopName string, xid int32) (*Taskbar, error) {
 	var t Taskbar
 	var session session
 	var backend backend
@@ -73,7 +73,7 @@ func Init(desktopName string, xid int32) (*Taskbar, error) {
 	}
 
 	if backend == unityBackend {
-		entry, err := libUnityInit(desktopName)
+		entry, err := libUnityConnect(desktopName)
 		if err != nil {
 			return nil, err
 		}
@@ -82,6 +82,15 @@ func Init(desktopName string, xid int32) (*Taskbar, error) {
 		t = Taskbar{session, backend, nil, xid, 0, false, 0}
 	}
 	return &t, nil
+}
+
+func (t *Taskbar) Disconnect() []error {
+	if t.backend == xappBackend {
+		// TODO: Xapp implementation
+		return nil
+	} else {
+		return libUnityDisconnect(t.unityEntry)
+	}
 }
 
 // Get current progress value
@@ -112,8 +121,7 @@ func (t *Taskbar) Count() int {
 	return t.count
 }
 
-// Set counter value (may not work depending on user's desktop environment even
-// if other features work)
+// Set counter value (only supported by libunity Launcher API)
 func (t *Taskbar) SetCount(c int) error {
 	t.count = c
 	return t.update()
