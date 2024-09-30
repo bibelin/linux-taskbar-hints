@@ -123,5 +123,3 @@ func (entry *libUnityEntry) update(progress float64, pulse bool, count int64) er
 	}
 	return nil
 }
-
-// TODO: Query method
