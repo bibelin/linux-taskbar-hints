@@ -1,4 +1,3 @@
-// Package to set window hints like progress in taskbar on Linux.
 package taskbar
 
 import (
@@ -33,7 +32,8 @@ type Taskbar struct {
 // Creates [Taskbar] item.
 // `desktopName` is a name of desktop file to be worked with using libunity
 // Launcher API (".desktop" suffix can be omitted). `xid` is an xorg window ID
-// used in case if taskbar item is modified using xapp window hints.
+// used in case if taskbar item is modified using xapp window hints, set it to 0
+// if not used.
 func Connect(desktopName string, xid int32) (*Taskbar, error) {
 	var t Taskbar
 	var session session
