@@ -83,6 +83,9 @@ func Connect(desktopName string, xid int32) (*Taskbar, error) {
 }
 
 func (t *Taskbar) Disconnect() []error {
+	if t == nil {
+		return []error{errors.New("Not connected to taskbar.")}
+	}
 	if t.backend == xappBackend {
 		// TODO: Xapp implementation
 		return nil
