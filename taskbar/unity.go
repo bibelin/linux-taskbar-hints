@@ -25,9 +25,14 @@ const introspection = `
 	</interface>` + introspect.IntrospectDataString + `</node> `
 
 type libUnityEntry struct {
-	connection *dbus.Conn
-	uri        string
-	objectPath dbus.ObjectPath
+	connection      *dbus.Conn
+	uri             string
+	objectPath      dbus.ObjectPath
+	progress        float64
+	progressVisible bool
+	urgent          bool
+	count           int64
+	countVisible    bool
 }
 
 func libUnityInit(desktopName string) (*libUnityEntry, error) {
@@ -52,14 +57,25 @@ func libUnityInit(desktopName string) (*libUnityEntry, error) {
 	}
 	entry.objectPath = dbus.ObjectPath("/com/canonical/unity/launcherentry/" + strconv.FormatUint(hash, 10))
 
-	conn.Export("", entry.objectPath, dbusInterface)
+	conn.Export(&entry, entry.objectPath, dbusInterface)
 	conn.Export(introspect.Introspectable(introspection), entry.objectPath,
 		"org.freedesktop.DBus.Introspectable")
 
 	return &entry, nil
 }
 
-func (entry *libUnityEntry) update(progress float64, pulse bool, count uint) error {
+func (entry *libUnityEntry) Query() (map[string]interface{}, *dbus.Error) {
+	data := map[string]interface{}{
+		"progress":         entry.progress,
+		"progress-visible": entry.progressVisible,
+		"urgent":           entry.urgent,
+		"count":            entry.count,
+		"countVisible":     entry.countVisible,
+	}
+	return data, nil
+}
+
+func (entry *libUnityEntry) update(progress float64, pulse bool, count int64) error {
 	var progressVisible bool
 	var countVisible bool
 
@@ -83,6 +99,14 @@ func (entry *libUnityEntry) update(progress float64, pulse bool, count uint) err
 		countVisible = true
 	}
 
+	// Saving properties to use in [Query]
+	entry.progress = progress
+	entry.progressVisible = progressVisible
+	entry.urgent = pulse
+	entry.count = count
+	entry.countVisible = countVisible
+
+	// Data to send with signal
 	data := map[string]interface{}{
 		"progress":         progress,
 		"progress-visible": progressVisible,
