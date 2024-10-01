@@ -114,7 +114,7 @@ func (entry *libUnityEntry) update(progress float64, pulse bool, count int64) er
 		"progress-visible": progressVisible,
 		"urgent":           pulse,
 		"count":            count,
-		"countVisible":     countVisible,
+		"count-visible":    countVisible,
 	}
 	// Emit com.canonical.Unity.LauncherEntry.Update signal
 	if err := entry.connection.Emit(

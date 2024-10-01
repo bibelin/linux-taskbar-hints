@@ -23,11 +23,4 @@
 //     for snaps, because desktop file names are changed there automaticaly)
 //     without the need to patch a program.
 //   - GO_TASKBAR_TEST_XID needs to be set to proper X11 window id to pass Xapp test.
-//
-// A note for KDE users: while Plasma supports libunity Launcher API, you may
-// notice lack of counter badges when developing software. This is caused by
-// Plasma behaviour, that expects a counter badge to only be shown by an
-// application that also shows notifications. If you application shows them,
-// has a proper desktop file and showing badges is allowed in plasma settings,
-// counter badge will work as it should.
 package taskbar
