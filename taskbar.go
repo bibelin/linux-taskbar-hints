@@ -40,13 +40,14 @@ func Connect(desktopName string, xid int32) (*Taskbar, error) {
 	var backend backend
 
 	// Detect session type
-	switch os.Getenv("XDG_SESSION_TYPE") {
+	xdgSession := os.Getenv("XDG_SESSION_TYPE")
+	switch xdgSession {
 	case "wayland":
 		session = waylandSession
 	case "x11":
 		session = xorgSession
-	_:
-		return nil, errors.New(fmt.Sprintf("Unknown session type: %v", session))
+	default:
+		return nil, errors.New(fmt.Sprintf("Unknown session type: %v", xdgSession))
 	}
 
 	// Set backend
