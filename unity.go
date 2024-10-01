@@ -66,20 +66,17 @@ func libUnityConnect(desktopName string) (*libUnityEntry, error) {
 	return &entry, nil
 }
 
-func libUnityDisconnect(entry *libUnityEntry) []error {
-	var results []error
-
+func libUnityDisconnect(entry *libUnityEntry) error {
 	if entry == nil {
 		return nil
 	}
-
 	if err := entry.update(0, false, 0); err != nil {
-		results = append(results, err)
+		return err
 	}
 	if err := entry.connection.Close(); err != nil {
-		results = append(results, err)
+		return err
 	}
-	return results
+	return nil
 }
 
 // com.canonical.Unity.LauncherEntry.Query Dbus method

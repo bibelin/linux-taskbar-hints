@@ -23,7 +23,7 @@ type Taskbar struct {
 	session    session        // session type (wayland or xorg)
 	backend    backend        // taskbar backend (libunity or xapp)
 	unityEntry *libUnityEntry // LibUnity launcher entry
-	xid        int32          // xorg window ID
+	xappData   *xappData      // Data for Xapp backend
 	progress   int            // progress value (0-100)
 	pulse      bool           // whether taskbar pulse is enabled
 	count      int            // counter value (only supported by libunity API)
@@ -34,7 +34,7 @@ type Taskbar struct {
 // Launcher API (".desktop" suffix can be omitted). `xid` is an xorg window ID
 // used in case if taskbar item is modified using xapp window hints, set it to 0
 // if not used.
-func Connect(desktopName string, xid int32) (*Taskbar, error) {
+func Connect(desktopName string, xid int) (*Taskbar, error) {
 	var t Taskbar
 	var session session
 	var backend backend
@@ -76,20 +76,23 @@ func Connect(desktopName string, xid int32) (*Taskbar, error) {
 		if err != nil {
 			return nil, err
 		}
-		t = Taskbar{session, backend, entry, xid, 0, false, 0}
+		t = Taskbar{session, backend, entry, nil, 0, false, 0}
 	} else {
-		t = Taskbar{session, backend, nil, xid, 0, false, 0}
+		xapp, err := xappConnect(uint32(xid))
+		if err != nil {
+			return nil, err
+		}
+		t = Taskbar{session, backend, nil, xapp, 0, false, 0}
 	}
 	return &t, nil
 }
 
-func (t *Taskbar) Disconnect() []error {
+func (t *Taskbar) Disconnect() error {
 	if t == nil {
-		return []error{errors.New("Not connected to taskbar.")}
+		return errors.New("Not connected to taskbar.")
 	}
 	if t.backend == xappBackend {
-		// TODO: Xapp implementation
-		return nil
+		return xappDisconnect(t.xappData)
 	} else {
 		return libUnityDisconnect(t.unityEntry)
 	}
@@ -131,8 +134,7 @@ func (t *Taskbar) SetCount(c int) error {
 
 func (t *Taskbar) update() error {
 	if t.backend == xappBackend {
-		// TODO: Xapp implementation
-		return nil
+		return t.xappData.update(uint64(t.progress), t.pulse)
 	} else {
 		return t.unityEntry.update(float64(t.progress)/100.0, t.pulse, int64(t.count))
 	}

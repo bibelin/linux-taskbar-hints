@@ -12,7 +12,7 @@
 // Neither libunity nor libxapp don't need to be installed for this package to
 // work, direct Dbus calls and Xorg hints are used instead.
 //
-// There are 2 environment variables to enforce specific behaviour for this
+// There are 3 environment variables to enforce specific behaviour for this
 // library:
 //
 //   - GO_TASKBAR_BACKEND chooses specific backend no matter what should be
@@ -22,6 +22,7 @@
 //     for libunity backend to work. This can be useful for packagers (especially
 //     for snaps, because desktop file names are changed there automaticaly)
 //     without the need to patch a program.
+//   - GO_TASKBAR_TEST_XID needs to be set to proper X11 window id to pass Xapp test.
 //
 // A note for KDE users: while Plasma supports libunity Launcher API, you may
 // notice lack of counter badges when developing software. This is caused by
