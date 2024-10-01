@@ -63,6 +63,10 @@ func Connect(desktopName string, xid int) (*Taskbar, error) {
 		backend = unityBackend
 	}
 
+	if overrideDesktopName, res := os.LookupEnv("GO_TASKBAR_DESKTOP_NAME"); res {
+		desktopName = overrideDesktopName
+	}
+
 	// Check if current backend can be used
 	if backend == unityBackend && desktopName == "" {
 		return nil, errors.New("LibUnity backend was chosen, but desktop file name is empty.")
