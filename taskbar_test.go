@@ -28,6 +28,9 @@ func TestLibunity(t *testing.T) {
 }
 
 func TestXapp(t *testing.T) {
+	if _, res := os.LookupEnv("GITHUB_ACTIONS"); res {
+		t.Skip("Running in Github workflow, skipping the test.")
+	}
 	os.Setenv("GO_TASKBAR_BACKEND", "xapp")
 	xid, err := strconv.ParseInt(os.Getenv("GO_TASKBAR_TEST_XID"), 10, 0)
 	if err != nil {
