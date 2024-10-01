@@ -57,7 +57,7 @@ func Connect(desktopName string, xid int) (*Taskbar, error) {
 		backend = xappBackend
 	} else if session == waylandSession {
 		backend = unityBackend
-	} else if os.Getenv("XDG_CURRENT_DESKTOP") == "Cinnamon" {
+	} else if os.Getenv("XDG_CURRENT_DESKTOP") == "X-Cinnamon" {
 		backend = xappBackend
 	} else {
 		backend = unityBackend
