@@ -1,6 +1,6 @@
 # Go Taskbar package
 
-[![Build workflow](https://github.com/bibelin/taskbar/actions/workflows/go.yml/badge.svg)](https://github.com/bibelin/taskbar/actions/workflows/go.yml) [![Go Reference](https://pkg.go.dev/badge/bibelin/taskbar.svg)](https://pkg.go.dev/bibelin/taskbar)
+[![Build workflow](https://github.com/bibelin/taskbar/actions/workflows/go.yml/badge.svg)](https://github.com/bibelin/taskbar/actions/workflows/go.yml) [![Go Report Card](https://goreportcard.com/badge/github.com/bibelin/taskbar)](https://goreportcard.com/report/github.com/bibelin/taskbar) [![Go Reference](https://pkg.go.dev/badge/bibelin/taskbar.svg)](https://pkg.go.dev/bibelin/taskbar)
 
 Set window hints like progress in taskbar on Linux.
 
