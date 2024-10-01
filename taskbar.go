@@ -91,6 +91,7 @@ func Connect(desktopName string, xid int) (*Taskbar, error) {
 	return &t, nil
 }
 
+// Resets all properties and gracefully disconnects from taskbar
 func (t *Taskbar) Disconnect() error {
 	if t == nil {
 		return errors.New("Not connected to taskbar.")
@@ -126,8 +127,8 @@ func (t *Taskbar) Pulse() bool {
 	return t.pulse
 }
 
-// Enable or disable pulse. This mode "highlights" the item in taskbar, dragging
-// user attention. If pulse is enabled, progress is not shown.
+// Enable or disable pulse. This property highlights the item in taskbar,
+// dragging user attention. If pulse is enabled, progress is not shown.
 func (t *Taskbar) SetPulse(p bool) error {
 	if t.pulse != p {
 		t.pulse = p
