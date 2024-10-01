@@ -10,6 +10,9 @@ const desktop = "my.app.desktop"
 
 func TestLibunity(t *testing.T) {
 	os.Setenv("GO_TASKBAR_BACKEND", "libunity")
+	if _, res := os.LookupEnv("GITHUB_ACTIONS"); res {
+		os.Setenv("XDG_SESSION_TYPE", "wayland")
+	}
 	tb, err := Connect(desktop, 0)
 	if err != nil {
 		t.Fatal(err)
