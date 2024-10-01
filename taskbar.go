@@ -105,8 +105,16 @@ func (t *Taskbar) Progress() int {
 
 // Set progress value (0-100)
 func (t *Taskbar) SetProgress(p int) error {
-	t.progress = p
-	return t.update()
+	if t.progress != p {
+		if p > 100 {
+			p = 100
+		} else if p < 0 {
+			p = 0
+		}
+		t.progress = p
+		return t.update()
+	}
+	return nil
 }
 
 // Get current pulse value
@@ -117,8 +125,11 @@ func (t *Taskbar) Pulse() bool {
 // Enable or disable pulse. This mode "highlights" the item in taskbar, dragging
 // user attention. If pulse is enabled, progress is not shown.
 func (t *Taskbar) SetPulse(p bool) error {
-	t.pulse = p
-	return t.update()
+	if t.pulse != p {
+		t.pulse = p
+		return t.update()
+	}
+	return nil
 }
 
 // Get current counter value
@@ -128,11 +139,17 @@ func (t *Taskbar) Count() int {
 
 // Set counter value (only supported by libunity Launcher API)
 func (t *Taskbar) SetCount(c int) error {
-	t.count = c
-	return t.update()
+	if t.count != c {
+		t.count = c
+		return t.update()
+	}
+	return nil
 }
 
 func (t *Taskbar) update() error {
+	if t.pulse {
+		t.progress = 0
+	}
 	if t.backend == xappBackend {
 		return t.xappData.update(uint64(t.progress), t.pulse)
 	} else {
