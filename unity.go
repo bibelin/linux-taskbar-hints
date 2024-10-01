@@ -94,24 +94,10 @@ func (entry *libUnityEntry) Query() (map[string]interface{}, *dbus.Error) {
 func (entry *libUnityEntry) update(progress float64, pulse bool, count int64) error {
 	var progressVisible bool
 	var countVisible bool
-
-	if progress > 1.0 {
-		progress = 1.0
-		progressVisible = true
-	} else if progress <= 0.0 {
-		progress = 0.0
-		progressVisible = false
-	} else {
+	if progress > 0.0 && (!pulse) {
 		progressVisible = true
 	}
-
-	if pulse {
-		progressVisible = false
-	}
-
-	if count == 0 {
-		countVisible = false
-	} else {
+	if count > 0 {
 		countVisible = true
 	}
 
