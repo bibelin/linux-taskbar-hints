@@ -1,9 +1,11 @@
-package taskbar
+package taskbar_test
 
 import (
 	"os"
 	"strconv"
 	"testing"
+
+	"github.com/bibelin/taskbar"
 )
 
 const desktop = "my.app.desktop"
@@ -13,7 +15,7 @@ func TestLibunity(t *testing.T) {
 	if _, res := os.LookupEnv("GITHUB_ACTIONS"); res {
 		os.Setenv("XDG_SESSION_TYPE", "wayland")
 	}
-	tb, err := Connect(desktop, 0)
+	tb, err := taskbar.Connect(desktop, 0)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -40,7 +42,7 @@ func TestXapp(t *testing.T) {
 		t.Fatalf("Error getting GO_TASKBAR_TEST_XID: %v\n You need to set it to valid xid to pass the test.", err)
 	}
 
-	tb, err := Connect(desktop, int(xid))
+	tb, err := taskbar.Connect(desktop, int(xid))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -59,7 +61,7 @@ func TestXapp(t *testing.T) {
 
 func TestBackendsFail(t *testing.T) {
 	os.Setenv("GO_TASKBAR_BACKEND", "libunity")
-	tb, err := Connect("", 123)
+	tb, err := taskbar.Connect("", 123)
 	if err == nil {
 		t.Fail()
 	}
@@ -69,7 +71,7 @@ func TestBackendsFail(t *testing.T) {
 	}
 
 	os.Setenv("GO_TASKBAR_BACKEND", "xapp")
-	tb, err = Connect(desktop, 0)
+	tb, err = taskbar.Connect(desktop, 0)
 	if err == nil {
 		t.Fail()
 	}
