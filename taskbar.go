@@ -103,12 +103,12 @@ func (t *Taskbar) Disconnect() error {
 	}
 }
 
-// Get current progress value
+// Gets current progress value
 func (t *Taskbar) Progress() int {
 	return t.progress
 }
 
-// Set progress value (0-100)
+// Sets progress value (0-100)
 func (t *Taskbar) SetProgress(p int) error {
 	if t.progress != p {
 		if p > 100 {
@@ -122,12 +122,12 @@ func (t *Taskbar) SetProgress(p int) error {
 	return nil
 }
 
-// Get current pulse value
+// Gets current pulse value
 func (t *Taskbar) Pulse() bool {
 	return t.pulse
 }
 
-// Enable or disable pulse. This property highlights the item in taskbar,
+// Enables or disables pulse. This property highlights the item in taskbar,
 // dragging user attention. If pulse is enabled, progress is not shown.
 func (t *Taskbar) SetPulse(p bool) error {
 	if t.pulse != p {
@@ -137,12 +137,12 @@ func (t *Taskbar) SetPulse(p bool) error {
 	return nil
 }
 
-// Get current counter value
+// Gets current counter value
 func (t *Taskbar) Count() int {
 	return t.count
 }
 
-// Set counter value (only supported by libunity Launcher API)
+// Sets counter value (only supported by libunity Launcher API)
 func (t *Taskbar) SetCount(c int) error {
 	if t.count != c {
 		t.count = c
