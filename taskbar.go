@@ -144,6 +144,9 @@ func (t *Taskbar) Count() int {
 
 // Sets counter value (only supported by libunity Launcher API)
 func (t *Taskbar) SetCount(c int) error {
+	if t.backend == xappBackend {
+		return nil
+	}
 	if t.count != c {
 		t.count = c
 		return t.update()
